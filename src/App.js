@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import {useState, useEffect} from "react";
+import Button from "./components/Button";
+import TableLists from "./components/TableLists";
+import Modal from "./components/Modal";
 
 function App() {
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState([]);
+
+  useEffect(() => {
+    const getData = JSON.parse(localStorage.getItem('List')) || [];
+    setForm(getData);
+  }, []);
+
+  useEffect(() => {
+    if (form.length > 0) {
+      localStorage.setItem('List', JSON.stringify(form));
+    }
+  }, [form]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Button setModal={setModal} />
+      <Modal modal={modal} setModal={setModal} form={form} setForm={setForm} />
+
+      <table>
+        <thead>
+        <tr>
+          <td>ID</td>
+          <td>Name</td>
+          <td>Phone</td>
+        </tr>
+        </thead>
+
+        <TableLists form={form} />
+      </table>
     </div>
   );
 }
